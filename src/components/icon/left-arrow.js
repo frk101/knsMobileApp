@@ -2,7 +2,7 @@ import * as React from 'react';
 import Svg, {Path} from 'react-native-svg';
 import {COLORS} from '../../theme';
 
-const ArrowLeft = ({variant, sizeIcon}) => {
+const ArrowLeft = ({sizeIcon}) => {
   const size = {
     sm: 20,
     md: 50,

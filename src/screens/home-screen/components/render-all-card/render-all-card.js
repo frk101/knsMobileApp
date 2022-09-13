@@ -5,15 +5,15 @@ import {Text} from '../../../../components';
 import {useNavigation} from '@react-navigation/native';
 import {ROUTES} from '../../../../constants/routes';
 
-const RenderAllCard = ({item: {item}}) => {
+const RenderAllCard = ({item}) => {
   const navigation = useNavigation();
 
   return (
     <TouchableOpacity
       style={styles.renderAllCard}
-      onPress={() => navigation.navigate(ROUTES.detail)}>
+      onPress={() => navigation.navigate(ROUTES.detail, {item: item})}>
       <View style={{marginHorizontal: SPACINGS[3]}}>
-        <Text>render-all-card</Text>
+        <Text>{item}</Text>
       </View>
     </TouchableOpacity>
   );

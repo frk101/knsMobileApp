@@ -1,8 +1,7 @@
 import * as React from 'react';
 import Svg, {Path} from 'react-native-svg';
-import PropTypes from 'prop-types';
 
-const Warning = ({variant, sizeIcon}) => {
+const Warning = ({sizeIcon}) => {
   const size = {
     sm: 50,
     md: 75,

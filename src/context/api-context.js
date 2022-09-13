@@ -4,6 +4,7 @@ import {
   ALL_CARDS_FAILURE,
   SEARCH_CARDS_SUCCESS,
   SEARCH_CARDS_FAILURE,
+  ALL_MECHANICS_SUCCESS,
 } from './api-context-type';
 
 export const ApiContext = React.createContext({});
@@ -13,6 +14,9 @@ const initialState = {
   allCardsLoading: true,
   allCardsError: '',
   allCardsData: [],
+  allMechanicsLoading: true,
+  allMechanicsError: '',
+  allMechanicsData: [],
   searchCardSearchLoading: true,
   searchCardSearchData: [],
   searchCardSearchError: '',
@@ -47,6 +51,13 @@ const reducer = (state, action) => {
         searchCardSearchLoading: false,
         searchCardSearchData: [],
         searchCardSearchError: 'Something went wrong',
+      };
+    case ALL_MECHANICS_SUCCESS:
+      return {
+        ...state,
+        allMechanicsLoading: false,
+        allMechanicsError: '',
+        allMechanicsData: action.payload,
       };
     default:
       return state;

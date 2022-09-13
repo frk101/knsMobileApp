@@ -9,36 +9,53 @@ import {Text, ListEmptyComponent, ScreenOverlay} from '../../components';
 import styles from './styles';
 import {SPACINGS} from '../../theme';
 import RenderAllCard from './components/render-all-card/render-all-card';
-import {dummyData} from '../../../data';
 
 const HomeScreen = () => {
-  const {top, bottom} = useSafeAreaInsets();
+  const {top} = useSafeAreaInsets();
   const apiContext = useContext(ApiContext);
   const {state, dispatch} = apiContext;
-  const {allCardsData, allCardsError, allCardsLoading} = state;
+  const {allCardsLoading, allMechanicsData} = state;
 
-  // useEffect(() => {
-  //   axios
-  //     .request({
-  //       method: 'GET',
-  //       url: ENV.baseUrl + '/cards',
-  //       headers: {
-  //         'X-RapidAPI-Key': ENV.rapidApiKey,
-  //         'X-RapidAPI-Host': ENV.rapidApiHost,
-  //       },
-  //     })
-  //     .then(function (response) {
-  //       console.log(response);
-  //       dispatch({
-  //         type: 'ALL_CARDS_SUCCESS',
-  //         payload: response.data,
-  //       });
-  //     })
-  //     .catch(function (error) {
-  //       console.log(error);
-  //       dispatch({type: 'ALL_CARDS_FAILURE'});
-  //     });
-  // });
+  useEffect(() => {
+    axios
+      .request({
+        method: 'GET',
+        url: ENV.baseUrl + '/cards',
+        headers: {
+          'X-RapidAPI-Key': ENV.rapidApiKey,
+          'X-RapidAPI-Host': ENV.rapidApiHost,
+        },
+      })
+      .then(function (response) {
+        let allMechanics = [];
+        Object.getOwnPropertyNames(response?.data).map(item => {
+          response?.data[item].map(data => {
+            if (data && data.mechanics && data.mechanics.length > 0) {
+              data.mechanics.map(m => {
+                if (!allMechanics.some(x => x === m.name)) {
+                  allMechanics.push(m.name);
+                }
+                return m;
+              });
+            }
+            return data;
+          });
+          return item;
+        });
+        dispatch({
+          type: 'ALL_MECHANICS_SUCCESS',
+          payload: allMechanics,
+        });
+        dispatch({
+          type: 'ALL_CARDS_SUCCESS',
+          payload: response.data,
+        });
+      })
+      .catch(function (error) {
+        dispatch({type: 'ALL_CARDS_FAILURE'});
+      });
+    return () => {};
+  }, [dispatch]);
 
   return (
     <>
@@ -51,14 +68,22 @@ const HomeScreen = () => {
           </View>
           <FlatList
             style={{marginTop: SPACINGS[10]}}
-            data={dummyData}
-            keyExtractor={item => item.id.toString()}
-            renderItem={item => <RenderAllCard item={item} />}
-            ListEmptyComponent={() => <ListEmptyComponent />}
+            data={allMechanicsData}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({item}) => <RenderAllCard item={item} />}
+            ListEmptyComponent={() => (
+              <ListEmptyComponent
+                title={
+                  allCardsLoading
+                    ? 'Mechanics aranıyor..'
+                    : 'Mechanics bulunamadı.'
+                }
+              />
+            )}
           />
         </View>
       </View>
-      {/* <ScreenOverlay isLoading={true} /> */}
+      {allCardsLoading ? <ScreenOverlay isLoading={true} /> : null}
     </>
   );
 };
